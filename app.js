@@ -76,6 +76,95 @@
     }
   }
 
+  class ArticleView {
+    constructor(entry) {
+      this.entry = entry;
+    }
+
+    renderHeader() {
+      var container = document.createElement("div");
+      var header = document.createElement("h2");
+      var score = document.createElement("span");
+
+      header.innerText = this.entry.storyInfo.title;
+      score.innerText = this.entry.storyInfo.score;
+      score.className = "score";
+
+      container.appendChild(header);
+      container.appendChild(score);
+      container.className = "article-heading";
+
+      return container;
+    }
+
+    renderAuthor() {
+      var container = document.createElement("div");
+      var authorName = document.createElement("span");
+      var karma = document.createElement("span");
+      var time = new Date(this.entry.storyInfo.time * 1000);
+
+      authorName.className = "author-name";
+      karma.className = "karma";
+      authorName.innerText = `At ${time.toLocaleString()} by ${
+        this.entry.author.id
+      }`;
+      karma.innerText = `(${this.entry.author.karma})`;
+
+      container.className = "author";
+      container.appendChild(authorName);
+      container.appendChild(document.createTextNode(" "));
+      container.appendChild(karma);
+
+      return container;
+    }
+
+    renderUrl() {
+      var fragment = document.createDocumentFragment();
+      var readSpan = document.createElement("span");
+      var link = document.createElement("a");
+
+      readSpan.innerText = "Read: ";
+      link.href = this.entry.storyInfo.url;
+      link.rel = "noopener noreferrer";
+      link.innerText = this.entry.storyInfo.url;
+
+      fragment.appendChild(readSpan);
+      fragment.appendChild(link);
+
+      return fragment;
+    }
+
+    render() {
+      var articleEl = document.createElement("article");
+
+      articleEl.className = "article";
+      articleEl.appendChild(this.renderHeader());
+      articleEl.appendChild(this.renderAuthor());
+      articleEl.appendChild(this.renderUrl());
+
+      return articleEl;
+    }
+  }
+
+  class ArticleListView {
+    constructor(entries) {
+      this.entries = Array.from(entries).sort(
+        (a, b) => a.storyInfo.score - b.storyInfo.score
+      );
+    }
+
+    render() {
+      var fragment = document.createDocumentFragment();
+
+      this.entries.forEach((story) => {
+        var articleView = new ArticleView(story);
+        fragment.appendChild(articleView.render());
+      });
+
+      return fragment;
+    }
+  }
+
   class HackerNewsApp {
     constructor() {
       this.apiService = new ApiService();
@@ -84,6 +173,7 @@
     }
 
     init = () => {
+      this.initialRender();
       this.renderLoading();
       this.fetchTopStories()
         .then((storiesList) => {
@@ -119,20 +209,60 @@
       );
     }
 
+    initialRender() {
+      var header = document.createElement("h1");
+      header.className = "main-header";
+      header.innerText = "HackerNews";
+
+      this.container = document.createElement("div");
+
+      document.body.innerHTML = "";
+      document.body.appendChild(header);
+      document.body.appendChild(this.container);
+    }
+
+    clear() {
+      this.container.childNodes.forEach((node) =>
+        this.container.removeChild(node)
+      );
+    }
+
     renderLoading() {
-      // TODO: Implement loading render
+      if (!this.loader) {
+        var loader = document.createElement("h2");
+        loader.className = "loading";
+        loader.innerText = "Loading...";
+        this.loader = loader;
+      }
+
+      this.clear();
+      this.container.appendChild(this.loader);
     }
 
     renderStories() {
       // TODO: Implement stories render
+      this.clear();
       console.log(this.storiesList);
+      this.container.appendChild(
+        new ArticleListView(this.storiesList).render()
+      );
     }
 
     renderError(error) {
-      // TODO: Implement render error
       console.error(error);
+
+      if (!this.errorText) {
+        this.errorText = document.createElement("span");
+        this.errorText.className = "error";
+      }
+
+      this.errorText.innerText =
+        "Unable to show articles, something wrong happened";
+
+      this.clear();
+      this.container.appendChild(this.errorText);
     }
   }
 
-  new HackerNewsApp();
+  return new HackerNewsApp();
 })();
