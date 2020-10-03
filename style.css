@@ -1,0 +1,45 @@
+body {
+  margin: 0 20%;
+}
+.main-header {
+  border-bottom: 1px solid black;
+  background-color: orangered;
+  margin: 0;
+  padding: 0.67em;
+}
+
+.article {
+  padding: 6px;
+  border-bottom: 1px solid lightgray;
+}
+
+.article-heading {
+  display: flex;
+  flex-direction: row wrap;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.article-heading > h2 {
+  margin-bottom: 6px;
+}
+
+.author {
+  color: gray;
+}
+
+.author > .karma {
+  font-size: 0.8em;
+}
+
+.score,
+.karma {
+  font-weight: bolder;
+}
+.score::before {
+  content: "\2b50";
+}
+
+.karma::before {
+  content: "\1f44d";
+}
