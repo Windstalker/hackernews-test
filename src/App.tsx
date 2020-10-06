@@ -1,24 +1,25 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 
-function App() {
+import ErrorText from "./components/ErrorText";
+import Loading from "./components/Loading";
+import StoryList from "./components/StoryList";
+import { useFetchStories } from "./hooks/fetchStories";
+import ApiService from "./services/apiService";
+
+type Props = {
+  apiService: ApiService;
+};
+
+function App({ apiService }: Props) {
+  const result = useFetchStories(apiService);
+  const loading = !result.result && !result.error;
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1 className="App-header">HackerNews</h1>
+      {loading ? <Loading /> : null}
+      {result.error ? <ErrorText error={result.error} /> : null}
+      {result.result ? <StoryList stories={result.result} /> : null}
     </div>
   );
 }

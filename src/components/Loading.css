@@ -1,0 +1,7 @@
+.loading {
+  text-transform: capitalize;
+  text-align: center;
+  font-size: small;
+  font-weight: bold;
+  margin: 0.8em 0;
+}
