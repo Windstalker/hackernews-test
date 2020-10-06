@@ -1,0 +1,7 @@
+.error {
+  display: block;
+  font-size: 1.2em;
+  color: crimson;
+  text-align: center;
+  margin: 1em 0;
+}

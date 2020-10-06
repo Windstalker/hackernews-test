@@ -1,0 +1,36 @@
+.article {
+  padding: 6px;
+  border-bottom: 1px solid lightgray;
+
+  .article-heading {
+    display: flex;
+    flex-direction: row wrap;
+    align-items: baseline;
+    justify-content: space-between;
+
+    & > h2 {
+      margin-bottom: 6px;
+    }
+  }
+
+  .author {
+    color: gray;
+
+    & > .karma {
+      font-size: 0.8em;
+    }
+  }
+
+  .score,
+  .karma {
+    font-weight: bolder;
+  }
+
+  .score::before {
+    content: "\2b50";
+  }
+
+  .karma::before {
+    content: "\1f44d";
+  }
+}
